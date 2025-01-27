@@ -10,3 +10,9 @@ Speech disfluency, as shown in the temporal characteristics of spontaneous speec
 Large Language Models (LLMs) are deep learning neural networks. Vector embedding is a process to turn text data into a dense vector in a high-dimentional space. The similarity of data can now be measured by the distance of the vector space. Vector embedding can be used for classification. Agbavor and Liang (see reference below) has used GPT-3's Ada and Babbage base models to generate good AD classification results, and showed adding acoustic features only marginally improved the model performance.
 
 We developed a pipeline to automatically generate audio transcription files, create vector embeddings using the latest LLM models, and apply various deep learning models to distinguish Alzheimer's disease patients from healthy controls.
+
+## System Diagram
+<br/>
+<p align="center" width="100%">
+    <img width="8060%" src="images/system_diagram.png">
+</p>
