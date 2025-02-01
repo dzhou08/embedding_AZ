@@ -45,33 +45,37 @@ def fetch_audio_files(data_path, file_extension=".wav"):
 
 
 def transcribe(method):
-    logger.info("Start transcription:")
+    logger.info(f"Start {method} transcription :")
+
+    traing_data_path = ''
+    testing_data_path = ''
+    training_transcription_data_path = ''
+    testing_transcription_data_path = ''
 
     if method == "cha":
         # path to CHA files
-        train_audio_files = fetch_audio_files(os.getenv("TRAINING_CHA_DATA_PATH"), ".cha")
+        training_data_path = os.getenv("TRAINING_CHA_DATA_PATH")
+        testing_data_path = os.getenv("TESTING_CHA_DATA_PATH")
+        training_transcription_data_path = os.getenv("TRAINING_CHA_TRANSCRIPT_PATH")
+        testing_transcription_data_path = os.getenv("TESTING_CHA_TRANSCRIPT_PATH")
+
+        train_audio_files = fetch_audio_files(training_data_path, ".cha")
+        test_audio_files = fetch_audio_files(testing_data_path, ".cha")
     elif method == "whisper":
         # path to WAV files
-        train_audio_files = fetch_audio_files(os.getenv("TRAINING_WAV_DATA_PATH"), ".wav")
+        training_data_path = os.getenv("TRAINING_WAV_DATA_PATH")
+        testing_data_path = os.getenv("TESTING_WAV_DATA_PATH")
+        training_transcription_data_path = os.getenv("TRAINING_WAV_TRANSCRIPT_PATH")
+        testing_transcription_data_path = os.getenv("TESTING_WAV_TRANSCRIPT_PATH")
 
-    #test_audio_files = fetch_audio_files(os.getenv("TESTING_DATA_PATH"))
-
+        train_audio_files = fetch_audio_files(training_data_path, ".wav")
+        test_audio_files = fetch_audio_files(testing_data_path, ".wav")
+    
     # Write transcriptions files
-    write_transcription(train_audio_files, os.getenv("TRAINING_TRANSCRIPT_PATH"), method)
-    #write_transcription(test_audio_files, os.getenv("TESTING_TRANSCRIPT_PATH"), method)
+    write_transcription(train_audio_files, training_transcription_data_path, method)
+    write_transcription(test_audio_files, testing_transcription_data_path, method)
 
-    '''
-    # Scrape all transcriptions and save it to a csv file
-    train_df = transcription_to_df(config.diagnosis_train_transcription_dir)
-    train_df = add_train_scores(train_df)
-
-    test_df = transcription_to_df(config.diagnosis_test_transcription_dir)
-
-    df_to_csv(train_df, config.train_scraped_path)
-    df_to_csv(test_df, config.test_scraped_path)
-    '''
-    logger.info("Transcription done.")
-
+    logger.info(f"Done {method} transcription")
 
 def write_transcription(audio_files, transcription_dir, method):
     print(f"audio_files {audio_files}")
