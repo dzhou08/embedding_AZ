@@ -1,5 +1,5 @@
 
-# Alzheimer's Classfification using Vector Embedding of Audio transcription
+# Alzheimer's Classification using Vector Embedding of Audio transcription
 
 Alzheimer's disease (AD) is the most common form of dementia and represents an increasingly urgent global public health challenge. One in six people over 65 years old in the United States currently lives with Alzheimer's disease. The number of Alzheimer's patients will almost double every 20 years, reaching 78 million in 2030 and 319 million in 2050 worldwide.
 
