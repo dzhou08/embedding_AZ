@@ -13,3 +13,4 @@ openai==1.60.1
 numpy==2.0.2
 matplotlib==3.9.4
 python-dotenv==1.0.1
+rapidfuzz==3.12.1

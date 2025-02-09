@@ -18,13 +18,10 @@ def get_char_transcript(file_path, participant_type):
     Example:
         transcript = get_char_transcript('/path/to/chatfile.cha', 'CHI')
     """
-    print(file_path)
     data = pylangacq.read_chat(file_path)
 
     # Access basic information
     print(data.participants())
-    print(data.utterances())
-    print(data.words())
 
     par_words = data.words(participants=participant_type)
     par_words_str = ' '.join(par_words)

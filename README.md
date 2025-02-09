@@ -16,3 +16,19 @@ We developed a pipeline to automatically generate audio transcription files, cre
 <p align="center" width="100%">
     <img width="8060%" src="images/system_diagram.png">
 </p>
+
+
+1. `pip3 install -r requirements.txt`
+
+
+2. install Python spaCy NLP package:  `python -m spacy download en_core_web_sm`
+
+
+3. Install ffmpeg: Once Homebrew is installed, run the following command to install ffmpeg:
+
+`brew install ffmpeg`
+
+4. Run the main.py file
+
+`python ./main.py`
+
