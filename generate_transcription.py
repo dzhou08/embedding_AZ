@@ -17,6 +17,7 @@ import urllib.request
 import re
 from sklearn.utils import resample
 from matplotlib import pyplot as plt
+from utils_text import remove_text_patterns
 
 
 
@@ -96,8 +97,8 @@ def transcribe(method):
     test_audio_files = fetch_audio_files(testing_data_path, extension)
     
     # Write transcriptions files
-    #write_transcription(train_audio_files, training_transcription_data_path, method)
-    #write_transcription(test_audio_files, testing_transcription_data_path, method)
+    write_transcription(train_audio_files, training_transcription_data_path, method)
+    write_transcription(test_audio_files, testing_transcription_data_path, method)
 
     # Scrape all transcriptions and save it to a csv file
     train_df = transcription_to_df(training_transcription_data_path)
@@ -187,6 +188,10 @@ def transcription_to_df(data_dir):
             # Read the content of the file
             with codecs.open(os.path.join(root, file), 'r', encoding='utf-8', errors='ignore') as f:
                 text = f.read()
+
+                # clean up the text
+                text = remove_text_patterns(text)
+
                 # remove extension from the file name
                 file_stem = os.path.splitext(file)[0]
                 texts.append((file_stem, text))

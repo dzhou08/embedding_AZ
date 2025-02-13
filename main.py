@@ -6,7 +6,9 @@ import generate_embeddings as embedding
 
 import generate_transcription as tr
 
+import generate_classification as cl
 
+import os
 
 def main():
 
@@ -20,6 +22,7 @@ def main():
         go_embedding()
     elif choice == "3":
         print("Build Classification Models")
+        go_classification()
     elif choice == "4":
         print("Exit")
 
@@ -71,6 +74,16 @@ def go_embedding():
         embedding_model = "text-embedding-3-large"
     
     embedding.create_embeddings(embedding_model)
-    
+
+def go_classification():
+    MODEL_TRANING_PATH_GENERAL = os.getenv("MODEL_TRANING_PATH_GENERAL")
+    MODEL_TESTING_PATH_GENERAL = os.getenv("MODEL_TESTING_PATH_GENERAL")
+
+    train_embeddings_array = cl.embeddings_to_array(MODEL_TRANING_PATH_GENERAL+ "/training_embeddings.csv")
+    test_embeddings_array = cl.embeddings_to_array(MODEL_TESTING_PATH_GENERAL + '/testing_embeddings.csv')
+    #print(test_embeddings_array)
+
+    cl.classify_embedding(train_embeddings_array, test_embeddings_array, int(os.getenv("N_SPLITS")))
+
 if __name__ == "__main__":
     main()
