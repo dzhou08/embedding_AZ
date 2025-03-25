@@ -14,7 +14,7 @@ We developed a pipeline to automatically generate audio transcription files, cre
 ## System Diagram
 <br/>
 <p align="center" width="100%">
-    <img width="8060%" src="images/system_diagram.png">
+    <img width="8060%" src="images/system_diagram.jpg">
 </p>
 
 
