@@ -26,3 +26,5 @@ def get_char_transcript(file_path, participant_type):
     par_words = data.words(participants=participant_type)
     par_words_str = ' '.join(par_words)
     return par_words_str
+
+#get_char_transcript('/Users/danielzhou/Desktop/dev_embedding/embedding_AZ/ADReSSo_2020/ADReSS-IS2020-data-train/train/transcription/cc/S002.cha', 'PAR')

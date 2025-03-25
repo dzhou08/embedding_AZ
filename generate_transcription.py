@@ -7,6 +7,7 @@ import codecs
 import pandas as pd
 import utils_cha_files as cha
 import utils_assemblyai as uaai
+import utils_text as text
 
 import os
 from dotenv import load_dotenv
@@ -62,7 +63,7 @@ def transcribe(method):
     extension = ""
     if method == "cha":
         extension = ".cha"
-    elif method == "whisper":
+    else:
         extension = ".wav"
 
     if method == "cha":
@@ -73,8 +74,6 @@ def transcribe(method):
         testing_transcription_data_path = os.getenv("TESTING_CHA_TRANSCRIPT_PATH")
         model_training_path = os.getenv("MODEL_TRANING_PATH_CHA")
         model_testing_path = os.getenv("MODEL_TESTING_PATH_CHA")
-
-
     elif method == "whisper":
         # path to WAV files
         training_data_path = os.getenv("TRAINING_WAV_DATA_PATH")
@@ -87,8 +86,8 @@ def transcribe(method):
         # path to WAV files
         training_data_path = os.getenv("TRAINING_WAV_DATA_PATH")
         testing_data_path = os.getenv("TESTING_WAV_DATA_PATH")
-        training_transcription_data_path = os.getenv("TRAINING_WAV_TRANSCRIPT_PATH")
-        testing_transcription_data_path = os.getenv("TESTING_WAV_TRANSCRIPT_PATH")
+        training_transcription_data_path = os.getenv("TRAINING_ASSEMBLYAI_TRANSCRIPT_PATH")
+        testing_transcription_data_path = os.getenv("TESTING_ASSEMBLYAI_TRANSCRIPT_PATH")
         model_training_path = os.getenv("MODEL_TRANING_PATH_ASSEMBLYAI")
         model_testing_path = os.getenv("MODEL_TESTING_PATH_ASSEMBLYAI")
 
@@ -134,16 +133,18 @@ def transcribe(method):
 
 
 def write_transcription(audio_files, transcription_dir, method):
-    print(f"audio_files {audio_files}")
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    #print(f"audio_files {audio_files}")
     # Loop over all the audio files in the folder
     for audio_file in audio_files:
         # Get base filename
         filename = Path(audio_file).stem
         transcription_file = Path(transcription_dir) / filename
         transcription_file = transcription_file.resolve()
-        print(f"transcription_file {transcription_file}")
+        #print(f"transcription_file {transcription_file}")
 
         # Do not transcribe again if the transcription exists already
+        print(f"method= {method}")
         if not transcription_file.exists():
             if method == "cha":
                 #transcription using pylangacq on the .cha files
@@ -159,6 +160,10 @@ def write_transcription(audio_files, transcription_dir, method):
                 print(f"audio_file {audio_file}")
                 result = whisper_model.transcribe(audio_file, fp16=False)
                 transcription_str = str(result["text"])
+
+                # post process with the gpt-4o model
+                transcription_str = text.post_process_whisper_text(transcription_str, openai_api_key)
+
             elif method == "assemblyai":
                 # transcription using AssemblyAI
                 transcription_str = uaai.process_audio_file(audio_file)
@@ -167,7 +172,7 @@ def write_transcription(audio_files, transcription_dir, method):
             transcription_file.parent.mkdir(parents=True, exist_ok=True)
 
             transcription_file.write_text(transcription_str)
-            logger.info(f"Transcribed {transcription_file}...")
+            #logger.info(f"Transcribed {transcription_file}...")
 
 
 def transcription_to_df(data_dir):
@@ -190,6 +195,7 @@ def transcription_to_df(data_dir):
                 text = f.read()
 
                 # clean up the text
+                print("remove_text_patterns")
                 text = remove_text_patterns(text)
 
                 # remove extension from the file name

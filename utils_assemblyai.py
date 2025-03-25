@@ -46,6 +46,7 @@ def process_transcript_string(transcript):
 def process_audio_file(file_url):
     # get the key from .env file
     #load_dotenv()
+    print(f"tttttt {file_url}")
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
     transcriber = aai.Transcriber()
 
@@ -65,8 +66,9 @@ def process_audio_file(file_url):
     for utterance in transcript.utterances:
         print(f"Speaker {utterance.speaker}: {utterance.text}")
         transcript_string += f"Speaker {utterance.speaker}: {utterance.text}\n"
-
+    
+    print(f"Transcript String: {transcript_string}")
     # Process the transcript and return the first speaker's words
     result = process_transcript_string(transcript_string)
-    print("Concatenated Words:", result)
+    #print("Concatenated Words:", result)
     return result

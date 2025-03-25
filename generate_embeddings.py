@@ -30,23 +30,30 @@ def create_embeddings(embedding_model):
     MODEL_TRANING_PATH_GENERAL = os.getenv("MODEL_TRANING_PATH_GENERAL")
     MODEL_TESTING_PATH_GENERAL = os.getenv("MODEL_TESTING_PATH_GENERAL")
     train_df = pd.read_csv(MODEL_TRANING_PATH_GENERAL+ '/training.csv')
-    embedding_train_df = create_embeddings_for_dataframe(train_df, embedding_model)
-    embedding_train_df.to_csv(MODEL_TRANING_PATH_GENERAL + '/training_embeddings.csv', index=False)
+    create_embeddings_for_dataframe(train_df, embedding_model, MODEL_TRANING_PATH_GENERAL + '/training_embeddings.csv')
 
     test_df = pd.read_csv(MODEL_TESTING_PATH_GENERAL+ '/testing.csv')
-    embedding_test_df = create_embeddings_for_dataframe(test_df, embedding_model)
-    embedding_test_df.to_csv(MODEL_TESTING_PATH_GENERAL + '/testing_embeddings.csv', index=False)
+    create_embeddings_for_dataframe(test_df, embedding_model, MODEL_TESTING_PATH_GENERAL + '/testing_embeddings.csv')
 
-def create_embeddings_for_dataframe(df, embedding_model):
+
+def create_embeddings_for_dataframe(df, embedding_model, save_file_path):
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
     embeddings = []
-    # add new column to df
-    df['embedding'] = None
-    df['linguistic_features'] = None
+    # read dataframe from save_file_path
+    if os.path.exists(save_file_path):
+        df = pd.read_csv(save_file_path)
+    else:
+        df['embedding'] = None
+        df['linguistic_features'] = None
+        df.to_csv(save_file_path, index=False)
 
     # iterate through rows in the DataFrame
     for index, row in df.iterrows():
+        # skip if embedding already exists, not none and not empty and not nan
+        if not pd.isnull(row['embedding']) and row['embedding'] != '[]':
+            continue
+
         transcript = row['transcript']
         logger.info(f"before combining for {row['addressfname']}")
         embedding_vector = []
@@ -90,11 +97,12 @@ def create_embeddings_for_dataframe(df, embedding_model):
         
         # save the row to the DataFrame, inplace
         df.loc[index] = row
+        df.to_csv(save_file_path, index=False)
 
     
     # save numpy array to a column in the DataFrame
     # Convert NumPy arrays to lists
     #embeddings_as_lists = [vector.tolist() for vector in embeddings]
     #df['embedding'] = embeddings_as_lists
-    df = df.drop('transcript', axis=1)
-    return df
+    #df = df.drop('transcript', axis=1)
+    #df.to_csv(save_file_path, index=False)

@@ -12,7 +12,7 @@ import os
 
 def main():
 
-    prompt = "Please indicate your choice by typing numbers: \n 1: Transcribe audio files \n 2: Build Vector Embeddings \n 3: Build Classification Models \n 4: Exit \n"
+    prompt = "Please indicate your choice by typing numbers: \n 1: Transcribe audio files \n 2: Build Vector Embeddings \n 3: Build Classification Models \n 4: Build Regression Models \n 5: Exit \n"
     choice = input(prompt)
 
     if choice == "1":
@@ -24,6 +24,9 @@ def main():
         print("Build Classification Models")
         go_classification()
     elif choice == "4":
+        print("Build Regression Models")
+        go_regression()
+    else:
         print("Exit")
 
 def go_transcription():
@@ -84,6 +87,16 @@ def go_classification():
     #print(test_embeddings_array)
 
     cl.classify_embedding(train_embeddings_array, test_embeddings_array, int(os.getenv("N_SPLITS")))
+
+def go_regression():
+    MODEL_TRANING_PATH_GENERAL = os.getenv("MODEL_TRANING_PATH_GENERAL")
+    MODEL_TESTING_PATH_GENERAL = os.getenv("MODEL_TESTING_PATH_GENERAL")
+
+    train_embeddings_array = cl.embeddings_to_array(MODEL_TRANING_PATH_GENERAL+ "/training_embeddings.csv")
+    test_embeddings_array = cl.embeddings_to_array(MODEL_TESTING_PATH_GENERAL + '/testing_embeddings.csv')
+    #print(test_embeddings_array)
+
+    cl.regression_embedding(train_embeddings_array, test_embeddings_array, int(os.getenv("N_SPLITS")))
 
 if __name__ == "__main__":
     main()

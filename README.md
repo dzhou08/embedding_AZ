@@ -28,7 +28,10 @@ We developed a pipeline to automatically generate audio transcription files, cre
 
 `brew install ffmpeg`
 
-4. Run the main.py file
+4. install the following required library for XGBoost
+`brew install libomp`
+
+5. Run the main.py file
 
 `python ./main.py`
 
